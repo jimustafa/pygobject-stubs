@@ -1,0 +1,38 @@
+name: Weekly Stub Updates
+
+on:
+  push:
+  schedule:
+    - cron: '0 0 * * SUN'
+  workflow_dispatch:
+
+jobs:
+  install_and_run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            git \
+            libcairo2-dev \
+            libgirepository-2.0-0 \
+            libgirepository-2.0-dev \
+            gir1.2-girepository-3.0 \
+            gir1.2-aravis-* \
+            gir1.2-pango-* \
+            gir1.2-soup-*
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version-file: .python-version
+
+      - uses: astral-sh/setup-uv@v7
+
+      - name: Update stub files
+        run: |
+          uv run ./tools/update_all.py --only aravis,pango,soup

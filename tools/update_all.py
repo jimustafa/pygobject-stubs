@@ -117,7 +117,7 @@ if __name__ == "__main__":
     only = [prefix.strip() for prefix in only]
 
     for lib in libraries:
-        if only and not any(lib.name.startswith(prefix) for prefix in only):
+        if only and not any(lib.name.lower().startswith(prefix.lower()) for prefix in only):
             continue
 
         output_path = repo_path / f"{lib.output}.pyi"
